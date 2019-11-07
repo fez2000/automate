@@ -1,0 +1,16 @@
+<choixIndisponible>
+ choix non disponible 
+<choixIndisponible>
+<nomClient>
+\t Entrer NOM Client :\t<nomclient>
+
+<dateNaisClient>
+<dateNaisClient>
+<sexeClient>
+<sexeClient>
+<continuerSauvegarde>
+\t Voulez-vous refaire un enregistrement?
+\t     1 - pour OUI
+\t     0 - pour NON
+
+\t Votre choix: \t<continuerSauvegarde>
