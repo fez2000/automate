@@ -14,7 +14,7 @@ public:
     ~Liste();
     bool est_vide();
     unsigned long nombre_element();
-    Cellule<T> *  ajouter(Cellule<T> *);
+    Cellule<T> * ajouter(Cellule<T> *);
     Cellule<T> * ajouter_trie(Cellule<T> *);
     Cellule<T> * ajouter_apres(Cellule<T>* , Cellule<T> *);
     Cellule<T> * ajouter_avant(Cellule<T>* , Cellule<T> *);

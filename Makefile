@@ -1,26 +1,38 @@
- 
 CFLAGS= -Wall -Wextra -g -c 
 CCPP= g++
 SRC = ./src
 LIB = ./lib
 OBJ = ./obj
 BIN = ./bin
-OBJECTS= $(OBJ)/date.o $(OBJ)/affichage.o $(OBJ)/lang.o $(OBJ)/relations.o  $(OBJ)/Article.o $(OBJ)/Articles.o $(OBJ)/Commande.o $(OBJ)/Commandes.o $(OBJ)/Client.o $(OBJ)/Clients.o $(OBJ)/fonctions.o $(OBJ)/Livraison.o $(OBJ)/Livraisons.o 
+OBJECTS=$(OBJ)/affichage.o $(OBJ)/date.o $(OBJ)/lang.o $(OBJ)/fonctions.o $(OBJ)/transition.o
 MAINOBJECTS= $(OBJ)/main.o
 TESTOBJECTS= $(OBJ)/test.o
-HEADER= $(SRC)/Date/Date.h $(SRC)/affichage/affichage.h $(SRC)/lang/lang.h $(SRC)/Cellule/Cellule.h $(SRC)/relations/relations.h $(SRC)/Client/Client.h $(SRC)/Client/Clients.h  $(SRC)/Article/Article.h $(SRC)/Article/Articles.h $(SRC)/Commande/Commande.h $(SRC)/Commande/Commandes.h $(SRC)/fonctions/fonctions.h $(SRC)/Livraison/Livraison.h $(SRC)/Livraison/Livraisons.h
+HEADER= $(SRC)/Date/Date.hpp $(SRC)/affichage/affichage.hpp $(SRC)/lang/lang.hpp $(SRC)/Cellule/Cellule.hpp $(SRC)/fonctions/fonctions.hpp $(SRC)/Transition/Transition.hpp
 do : app
-$(OBJ)/date.o: $(HEADER)
-	$(CCPP) $(CFLAGS) $(SRC)/Date/Date.cpp -o $(OBJ)/date.o
-
+$(OBJ)/date.o: ${HEADER} 
+	$(CCPP) $(CFLAGS) $(SRC)/Date/Date.cpp -o $(OBJ)/date.o $(OBJ)
+$(OBJ)/main.o: $(HEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/main/main.cpp -o $(OBJ)/main.o
+$(OBJ)/test.o: $(HEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/test/main.cpp  -o $(OBJ)/test.o
+$(OBJ)/lang.o: $(HEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/lang/lang.cpp  -o $(OBJ)/lang.o
+$(OBJ)/transition.o: $(HEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/Transition/Transition.cpp  -o $(OBJ)/transition.o
+$(OBJ)/fonctions.o: $(HEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/fonctions/fonctions.cpp  -o $(OBJ)/fonctions.o -lm
+$(OBJ)/Cellule.o: $(HEADER) 
+	$(CCPP) $(CFLAGS) $(SRC)/Cellule/Cellule.cpp -o $(OBJ)/Cellule.o
+$(OBJ)/affichage.o: $(HEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/affichage/affichage.cpp  -o $(OBJ)/affichage.o	
 app: ${OBJECTS} ${MAINOBJECTS}
-	g++ -o $(BIN)/commerce ${OBJECTS} ${MAINOBJECTS}
+	g++ -o $(BIN)/app ${OBJECTS} ${MAINOBJECTS}
 clean: 
 	rm -rf $(OBJ)/*.o
 	rm -rf $(BIN)/test
-	rm -rf $(BIN)/commerce
-run: commerce
-	./$(BIN)/commerce
+	rm -rf $(BIN)/app
+run: app
+	./$(BIN)/app
 test: ${OBJECTS} ${TESTOBJECTS}   
 	g++ -o $(BIN)/test ${OBJECTS} ${TESTOBJECTS}
 runtest: test

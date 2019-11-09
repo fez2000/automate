@@ -46,8 +46,8 @@ void acceuil(){
 
     switch (choixUtilisateur.c_str()[0]){
         case '0':
-            system("exit");
-            break;
+            exit(0);
+        break;
       
     };
 }
