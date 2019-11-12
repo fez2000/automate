@@ -8,28 +8,21 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
+
 #include "../lang/lang.hpp"
+#include "../type.hpp"
 #define ERROR_CODE 0
 #define SUCCESS_CODE 1
 #define MAX 500
 #define TAB "\t"
+#define MOTVIDE NULL 
 //types definition
-typedef int state;
-typedef  union  {
-    char c;
-    char * s;
-} symbol;
-  
-enum Mois {JANVIER,FEVRIER,MARS,AVRIL,MAI,JUIN,JUILLET,AOUT,SEPTEMBRE,OCTOBRE,NOVEMBRE,DECEMBRE};
-enum  { PAS_DERREUR,PAS_TROUVER,PAS_UN_NOMBRE,ID_INVALID, ERREUR_FIC_LANG , ERREUR_SYSTEME};
-typedef unsigned long typeId;
-typedef long long typeQte;
-    template < typename T> std::string to_str(T nombre){
-        std::stringstream strs;
-        strs << nombre;
-        std::string g(strs.str().c_str());
-        return g;
-    };
+template < typename T> std::string to_str(T nombre){
+    std::stringstream strs;
+    strs << nombre;
+    std::string g(strs.str().c_str());
+    return g;
+};
     void get_str(char *,const char *);
     long double get_long_double(char * chaine,const char *msa);
     long long get_long(char * chaine,const char * msg);

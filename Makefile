@@ -6,9 +6,17 @@ OBJ = ./obj
 BIN = ./bin
 OBJECTS=$(OBJ)/affichage.o $(OBJ)/date.o $(OBJ)/lang.o $(OBJ)/fonctions.o $(OBJ)/transition.o
 MAINOBJECTS= $(OBJ)/main.o
-TESTOBJECTS= $(OBJ)/test.o
+TESTOBJECTS= $(OBJ)/unittest.o $(OBJ)/testvalue.o $(OBJ)/rapport.o  
+TESTMAINOBJECTS= $(OBJ)/test.o
+TESTHEADER= $(SRC)/Test/lib/UnitTest.hpp $(SRC)/Test/lib/TestValue.hpp $(SRC)/Test/lib/Rapport.hpp
 HEADER= $(SRC)/Date/Date.hpp $(SRC)/affichage/affichage.hpp $(SRC)/lang/lang.hpp $(SRC)/Cellule/Cellule.hpp $(SRC)/fonctions/fonctions.hpp $(SRC)/Transition/Transition.hpp
 do : app
+$(OBJ)/unittest.o: $(TESTHEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/Test/lib/UnitTest.cpp -o $(OBJ)/unittest.o
+$(OBJ)/testvalue.o: $(TESTHEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/Test/lib/TestValue.cpp -o $(OBJ)/testvalue.o
+$(OBJ)/rapport.o: $(TESTHEADER)
+	$(CCPP) $(CFLAGS) $(SRC)/Test/lib/Rapport.cpp -o $(OBJ)/rapport.o 
 $(OBJ)/date.o: ${HEADER} 
 	$(CCPP) $(CFLAGS) $(SRC)/Date/Date.cpp -o $(OBJ)/date.o $(OBJ)
 $(OBJ)/main.o: $(HEADER)
@@ -27,13 +35,14 @@ $(OBJ)/affichage.o: $(HEADER)
 	$(CCPP) $(CFLAGS) $(SRC)/affichage/affichage.cpp  -o $(OBJ)/affichage.o	
 app: ${OBJECTS} ${MAINOBJECTS}
 	g++ -o $(BIN)/app ${OBJECTS} ${MAINOBJECTS}
+
 clean: 
 	rm -rf $(OBJ)/*.o
 	rm -rf $(BIN)/test
 	rm -rf $(BIN)/app
 run: app
 	./$(BIN)/app
-test: ${OBJECTS} ${TESTOBJECTS}   
-	g++ -o $(BIN)/test ${OBJECTS} ${TESTOBJECTS}
+test: ${OBJECTS} $(TESTMAINOBJECTS) $(TESTHEADER) ${TESTOBJECTS}   
+	g++ -o $(BIN)/test ${OBJECTS} $(TESTMAINOBJECTS) ${TESTOBJECTS}
 runtest: test
 	./$(BIN)/test	
