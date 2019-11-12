@@ -1,30 +1,38 @@
 #include "Date.hpp"
 namespace Date{
     std::string Date::to_str(Date d){
-        std::string delimteur("/");
+    std::string delimteur("/");
       return   ::to_str<int>(d.jour) + delimteur + ::to_str<int>(d.mois+1) + delimteur + ::to_str<int>(d.annee);
     };
     Date::Date (Date & a){
-        jour = a.jour;
-        mois = a.mois;
-        annee = a.annee;
+        
+        time = a.time;
     };
     Date::Date (const Date & a){
-        jour = a.jour;
-        mois = a.mois;
-        annee = a.annee;
+        
+        time = a.time;
     };
     Date::Date(/* args */)
     {
-        this->jour = 1;
-        this->mois = JANVIER;
-        this->annee = 2000;
+        time = std::time(0);
     }
     Date::Date(int jour,Mois mois,int annee)
     {
-        this->jour = jour;
-        this->mois = mois;
-        this->annee = annee;
+        {
+        int tm_sec;   // seconds of minutes from 0 to 61
+        int tm_min;   // minutes of hour from 0 to 59
+        int tm_hour;  // hours of day from 0 to 24
+        int tm_mday;  // day of month from 1 to 31
+        int tm_mon;   // month of year from 0 to 11
+        int tm_year;  // year since 1900
+        int tm_wday;  // days since sunday
+        int tm_yday;  // days since January 1st
+        int tm_isdst; // hours of daylight savings time
+        }
+        
+        time = std::time(NULL);
+        
+        
     }
 
     Date::~Date()
