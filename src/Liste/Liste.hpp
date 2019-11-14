@@ -3,172 +3,258 @@
 #include "../Cellule/Cellule.hpp"
 #include <iostream>
 #include <fstream>
-template <class T>class Liste
+template <class T>
+class Liste
 {
 protected:
-    Cellule<T> * tete;
-    Cellule<T> * sentinelle;
-    unsigned long taille;
+    Cellule<T> *head;
+    Cellule<T> *sentries;
+    unsigned long length;
+
 public:
     Liste();
     ~Liste();
-    bool est_vide();
-    unsigned long nombre_element();
-    Cellule<T> * ajouter(Cellule<T> *);
-    Cellule<T> * ajouter_trie(Cellule<T> *);
-    Cellule<T> * ajouter_apres(Cellule<T>* , Cellule<T> *);
-    Cellule<T> * ajouter_avant(Cellule<T>* , Cellule<T> *);
-    int enlever(Cellule<T> v);
-    Cellule<T> * recup_tete();
-    Cellule<T> * recup_sentinelle();
-    unsigned long recup_taille();
-    void trier();
-    Liste & operator= (const Liste &);
-    void deplacer_avant(Cellule<T> *,Cellule<T> *);
+    bool is_empty();
+    unsigned long get_length();
+    Cellule<T> *add(Cellule<T> *);
+    Cellule<T> *add_sort(Cellule<T> *);
+    Cellule<T> *add_after(Cellule<T> *, Cellule<T> *);
+    Cellule<T> *add_before(Cellule<T> *, Cellule<T> *);
+    int remove(Cellule<T> v);
+    int removeByValue(T v);
+    Cellule<T> *get_head();
+    Cellule<T> *get_sentries();
+    void sort();
+    void clear();
+    Liste &operator=(const Liste &);
+    void move_before(Cellule<T> *, Cellule<T> *);
 };
 
-template <class T> Liste<T> & Liste<T>::operator= (const Liste<T> & is){
-    if(&is != this){
-        taille = is.taille;
-        Cellule<T> * p = is.tete;
-        while (p!= is.sentinelle)
+template <class T>
+Liste<T> &Liste<T>::operator=(const Liste<T> &is)
+{
+    if (&is != this)
+    {
+        length = is.length;
+        Cellule<T> *p = is.head;
+        while (p != is.sentries)
         {
 
-            ajouter_trie(new Cellule<T>(p->get()));
-            p = p->get_next();
+            add_sort(new Cellule<T>(p->val()));
+            p = p->next();
         }
-        
     }
-    return * this;
+    return *this;
 };
-template <class T> void Liste<T>::deplacer_avant(Cellule<T> * a,Cellule<T> * p){
-    if(p == a)return;
-    
-    if(p == tete){
-        a->get_prev()->next(a->get_next());
-        a->get_next()->previous(a->get_prev());
-        p->previous(a);
+template <class T>
+void Liste<T>::move_before(Cellule<T> *a, Cellule<T> *p)
+{
+    if (p == a)
+        return;
+
+    if (p == head)
+    {
+        a->prev()->next(a->next());
+        a->next()->prev(a->prev());
+        p->prev(a);
         a->next(p);
-        tete = a;
-    }else{
-        if(a == tete){
-            tete = tete->get_next();
-        }else{
-            a->get_prev()->next(a->get_next());
-            a->get_next()->previous(a->get_prev());
-        }
-        
-        p->get_prev()->next(a);
-        a->previous(p->get_prev());
-        p->previous(a);
-        a->next(p);
-        
-    }        
-};
-template <class T> Liste<T>::Liste(){
-    
-    tete =  new Cellule<T> ;
-    sentinelle = tete;
-    taille = 0;
-}; 
-template <class T> Liste<T>::~Liste(){
-   while(sentinelle!=tete){
-       sentinelle = sentinelle->get_prev();
-       delete sentinelle->get_next();
-   }
-   delete sentinelle;
-};
-template <class T> void Liste<T>::trier(){
-    
-    Cellule<T> * p  = tete;
-    Cellule<T> * cur, * max;
-    cur  = p;
-    while ( cur != sentinelle)
-    {   max = p;
-        p = p->get_next();
-        while ( p != sentinelle )
+        head = a;
+    }
+    else
+    {
+        if (a == head)
         {
-            if(*max < *p){
+            head = head->next();
+        }
+        else
+        {
+            a->prev()->next(a->next());
+            a->next()->prev(a->prev());
+        }
+
+        p->prev()->next(a);
+        a->prev(p->prev());
+        p->prev(a);
+        a->next(p);
+    }
+};
+template <class T>
+Liste<T>::Liste()
+{
+
+    head = new Cellule<T>;
+    sentries = head;
+    length = 0;
+};
+template <class T>
+Liste<T>::~Liste()
+{
+    clear();
+    delete sentries;
+};
+template <class T>
+void Liste<T>::clear()
+{
+    while (sentries != head)
+    {
+        sentries = sentries->prev();
+        delete sentries->next();
+    }
+    length = 0;
+}
+template <class T>
+void Liste<T>::sort()
+{
+
+    Cellule<T> *p = head;
+    Cellule<T> *cur, *max;
+    cur = p;
+    while (cur != sentries)
+    {
+        max = p;
+        p = p->next();
+        while (p != sentries)
+        {
+            if (*max < *p)
+            {
                 max = p;
             }
-            p = p->get_next();
+            p = p->next();
         }
-        deplacer_avant(max,cur);
-        cur = cur->get_next(); 
+        move_before(max, cur);
+        cur = cur->next();
         p = cur;
     }
-    
+};
+template <class T>
+Cellule<T> *Liste<T>::get_head()
+{
+    return head;
+};
+template <class T>
+Cellule<T> *Liste<T>::get_sentries()
+{
+    return sentries;
+};
+template <class T>
+unsigned long Liste<T>::get_length()
+{
+    return length;
+};
 
-}; 
-template <class T> Cellule<T> * Liste<T>::recup_tete(){
-    return tete;
+template <class T>
+bool Liste<T>::is_empty()
+{
+    return length == 0;
 };
-template <class T> Cellule<T> * Liste<T>::recup_sentinelle(){
-    return sentinelle;
-};
-template <class T> unsigned long Liste<T>::recup_taille(){
-    return taille;
-};
-template <class T> unsigned long Liste<T>::nombre_element(){
-    return taille;
-};
-template <class T> bool Liste<T>::est_vide(){
-    return taille == 0;
-};
-template <class T> Cellule<T> *  Liste<T>::ajouter(Cellule<T> * v){
-    v->next(tete);
-    tete->previous(v);
-    tete = v;
-    taille++;
+template <class T>
+Cellule<T> *Liste<T>::add(Cellule<T> *v)
+{
+    v->next(head);
+    head->prev(v);
+    head = v;
+    length++;
     return v;
 };
-template <class T> Cellule<T> *  Liste<T>::ajouter_apres(Cellule<T> * v, Cellule<T> * a){
-    
-    v->get_next()->previous(a);
-    a->next(v->get_next());
+template <class T>
+Cellule<T> *Liste<T>::add_after(Cellule<T> *v, Cellule<T> *a)
+{
+
+    v->next()->prev(a);
+    a->next(v->next());
     v->next(a);
-    a->previous(v);
-    taille++;
+    a->prev(v);
+    length++;
     return v;
 };
-template <class T> Cellule<T> *  Liste<T>::ajouter_avant(Cellule<T>*  v, Cellule<T>  *a){
-    if(v == tete){
-        return ajouter(a);
-    }
-    
-    v->get_prev()->next(a);
-    
-    a->previous(v->get_prev());
-    v->previous(a);
-    a->next(v);
-    taille++;
-    return v;
-};
-template <class T> Cellule<T> *  Liste<T>::ajouter_trie(Cellule<T> * a){
-    if(taille == 0){
-      return  ajouter(a);
-
-        
-    }
-    Cellule<T> * b = tete;
-    while ((*b)< (*a) && b!= sentinelle)
+template <class T>
+Cellule<T> *Liste<T>::add_before(Cellule<T> *v, Cellule<T> *a)
+{
+    if (v == head)
     {
-        b = b->get_next();
+        return add(a);
     }
-    return ajouter_avant(b,a);
+
+    v->prev()->next(a);
+
+    a->prev(v->prev());
+    v->prev(a);
+    a->next(v);
+    length++;
+    return v;
 };
-template <class T> int Liste<T>::enlever(Cellule<T> v){
-    if(taille == 0){
+template <class T>
+Cellule<T> *Liste<T>::add_sort(Cellule<T> *a)
+{
+    if (length == 0)
+    {
+        return add(a);
+    }
+    Cellule<T> *b = head;
+    while ((*b) < (*a) && b != sentries)
+    {
+        b = b->next();
+    }
+    return add_before(b, a);
+};
+template <class T>
+int Liste<T>::remove(Cellule<T> v)
+{
+    if (length == 0)
+    {
         return 1;
     }
 
-    if(v.get() == tete->get() ){
-        tete = v.get_next();
-    }else{
-       v.get_prev()->next(v.get_next());     
+    if (v.get() == head->get())
+    {
+        head = v.next();
     }
-    
-    taille--;
+    else
+    {
+        v.prev()->next(v.next());
+    }
+
+    length--;
+    return 1;
+};
+template <class T>
+int Liste<T>::removeByValue(T v)
+{
+    if (length == 0)
+    {
+        return 1;
+    }
+    Cellule<T> *p = head;
+    size_t j = 0;
+    while (p != sentries)
+    {
+
+        if (p->val() == v)
+        {
+
+            if (j == 0)
+            {
+
+                head = p->next();
+                delete p;
+                p = head;
+
+                continue;
+            }
+            else
+            {
+
+                p->prev()->next(p->next());
+                Cellule<T> *a = p;
+                p = p->next();
+                delete a;
+            }
+        }
+        p = p->next();
+        j++;
+    }
+
+    length--;
     return 1;
 };
 

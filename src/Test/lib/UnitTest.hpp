@@ -25,7 +25,7 @@
             ~UnitTest();
             void testOn(Rapport * (* testFunction)( const TestValue * ));
             void displayRapport();
-            static void displayRapport(const Rapport *);
+            void displayName();
             Rapport * makeTest(const TestValue *);
         };
         

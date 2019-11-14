@@ -3,6 +3,8 @@
 #include "../fonctions/fonctions.hpp"
 #include "./lib/UnitTest.hpp"
 #include "../Liste/Liste.hpp"
+#include "./lib/TestValue.hpp"
+
 namespace test{
     
     
@@ -11,18 +13,15 @@ namespace test{
     {
     private:
         Liste<UnitTest> units;
+        TestValue allValue;
     public:
         Test(/* args */);
+        void addUnit(UnitTest);
+        void make();
         ~Test();
     };
     
-    Test::Test(/* args */)
-    {
-    }
     
-    Test::~Test()
-    {
-    }
     
     
     

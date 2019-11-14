@@ -5,6 +5,7 @@
 #define JOUR_MAX 31
 #define MOIS_MIN 0
 #define MOIS_MAX 11
+#include <ctime>
 namespace Date
 {
     class Date
@@ -13,6 +14,7 @@ namespace Date
         int jour ;
         Mois mois;
         int annee;
+        std::time_t time;
     public:
         Date();
         Date(int,Mois,int);

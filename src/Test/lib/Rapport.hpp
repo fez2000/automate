@@ -9,6 +9,7 @@
             std::string resumer; 
         public:
             Rapport(/* args */);
+            Rapport(bool status, const char * message);
             void message(std::string);
             void message(const char *);
             std::string message();

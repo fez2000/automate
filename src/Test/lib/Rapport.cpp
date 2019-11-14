@@ -4,7 +4,11 @@ namespace test {
         Rapport::Rapport(/* args */)
         {
         }
-        
+        Rapport::Rapport(bool t, const char * m)
+        {
+            resumer.assign(m);
+            testStatus = t;
+        }
         Rapport::~Rapport()
         {
         }
@@ -13,6 +17,9 @@ namespace test {
         };
         void Rapport::message(const char * m){
             resumer.assign(m);
+        };
+        void Rapport::message(std::string m){
+            resumer = m;
         };
         void Rapport::status(bool t){
             testStatus = t;

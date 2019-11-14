@@ -32,42 +32,47 @@ namespace test{
       
     };
     void UnitTest::displayRapport(){
-        if(testFeetBack ){
-            std::cout << UnitTestName << std::endl << testFeetBack->message() << std::endl;
-        }
+        std::cout << UnitTestName << std::endl << testFeetBack->message() << std::endl;
     };
-   
+   void UnitTest::displayName(){
+       std::cout << UnitTestName << std::endl;
+   };
     Rapport * UnitTest::makeTest(const TestValue * v){
-        Rapport * p = NULL,* e = NULL;
+        Rapport * e = NULL;
         try {
             e =  testFunction(v);
-            p = new Rapport(*e);
+            testFeetBack = new Rapport();
+            testFeetBack->message(e->message());
+            testFeetBack->status(e->status());
             delete e;
         } catch (const std::overflow_error& e) {
             // this executes if f() throws std::overflow_error (same type rule)
              std::cout << e.what();
-             p = new Rapport();
-             p->message(e.what());
-             p->status(false); 
+             testFeetBack = new Rapport();
+             testFeetBack->message(e.what());
+             testFeetBack->status(false); 
         } catch (const std::runtime_error& e) {
             // this executes if f() throws std::underflow_error (base class rule)
              std::cout << e.what(); 
-             p = new Rapport();
-             p->message(e.what());
-             p->status(false);
+             testFeetBack = new Rapport();
+             testFeetBack->message(e.what());
+             testFeetBack->status(false);
         } catch (const std::exception& e) {
             // this executes if f() throws std::logic_error (base class rule)
              std::cout << e.what(); 
-             p = new Rapport();
-             p->message(e.what());
-             p->status(false);
+             testFeetBack = new Rapport();
+             testFeetBack->message(e.what());
+             testFeetBack->status(false);
         } catch (...) {
             // this executes if f() throws std::string or int or any other unrelated type
             
-            p = new Rapport();
-            p->message("dsds");
-            p->status(false);
+            testFeetBack = new Rapport();
+            testFeetBack->message("dsds");
+            testFeetBack->status(false);
         }
-        return p;
+        
+        
+        displayRapport();
+        return testFeetBack;
     };
 }

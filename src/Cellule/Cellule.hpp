@@ -6,27 +6,27 @@
         T valeur;
         Cellule<T>  * precedent, *suivant;
     public:
-        int previous( Cellule<T> *);
-        int next( Cellule<T> *);
-        int set(T);
-        T get();
-        Cellule<T>* get_prev();
-        Cellule<T>* get_next();
+        void prev( Cellule<T> *);
+        void next( Cellule<T> *);
+        void val(T);
+        T val();
+        Cellule<T>* prev();
+        Cellule<T>* next();
         Cellule();
         Cellule(T);
         ~Cellule();
         Cellule<T>& operator= (const Cellule<T> &);
         friend int operator== (Cellule<T>  c1,Cellule<T>  c2){
-            return c1.get() == c2.get();
+            return c1.val() == c2.val();
         };
         friend int operator< (Cellule<T>  c1,Cellule<T>  c2){
-            return c1.get() < c2.get();
+            return c1.val() < c2.val();
         };
         friend int operator<= ( Cellule<T>  c1,Cellule<T>  c2){
-            return c1.get() <= c2.get();
+            return c1.val() <= c2.val();
         };
         friend int operator> (const Cellule<T> & c1,const Cellule<T> & c2){
-            return c1.get() > c2.get();
+            return c1.val() > c2.val();
         };
         friend std::ostream& operator<<(std::ostream &os, const Cellule<T> &b){
             
@@ -45,25 +45,24 @@
 #include <fstream>
     
     
-    template <class T> int Cellule<T>::set( T val){
+    template <class T> void Cellule<T>::val( T val){
         valeur = val;
-        return 1;
     }
-    template <class T> int Cellule<T>::next( Cellule<T>* n){
+    template <class T> void Cellule<T>::next( Cellule<T>* n){
         suivant = n;
-        return 1;
+       
     }
-    template <class T> int Cellule<T>::previous( Cellule<T>* p){
+    template <class T> void Cellule<T>::prev( Cellule<T>* p){
         precedent = p;
-        return 1;
+        
     }
-    template <class T> T Cellule<T>::get(){
+    template <class T> T Cellule<T>::val(){
         return valeur;
     }
-    template <class T> Cellule<T> * Cellule<T>::get_next(){
+    template <class T> Cellule<T> * Cellule<T>::next(){
         return suivant;
     }
-    template <class T> Cellule<T> * Cellule<T>::get_prev(){
+    template <class T> Cellule<T> * Cellule<T>::prev(){
         return precedent;
     }
 
