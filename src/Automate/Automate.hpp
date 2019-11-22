@@ -1,10 +1,13 @@
 #ifndef AUTOMATE_H_INCLUDE
 #define AUTOMATE_H_INCLUDE
 #include "../fonctions/fonctions.hpp"
+#include "../Erreur/Erreur.hpp"
 #include "../Transition/Transition.hpp"
 #include "../Liste/Liste.hpp"
+#include  <iostream>
 #include <set>
 #include <vector>
+#include <string>
 #define EPSILONE '\0'
 #define MOTVIDE NULL
 #define DEFAULT_ALPHABET "!\"#$%&'()*+,./123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}"
@@ -48,6 +51,18 @@ public:
     void copy_state(state from, state to);
     void change_trans(state s, symbol a, state new_aim);
     void init_sigma(const symbol *);
+    void append_state(state s);
+    void make_finale(state s);
+    void make_initiale(state s);
+    void remove_state(state s);
+    void remove_state_finale(state s);
+    void remove_state_initiale(state s);
+    bool is_finale(state s);
+    bool is_initiale(state s);
+    bool belongs(const symbol *word);
+    bool calculate_word_at(const symbol *word, state start);
+    Liste<state>
+    next_state_on(state s, symbol a);
     Automate(/* args */);
     ~Automate();
 };

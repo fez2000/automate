@@ -26,10 +26,25 @@ public:
     Cellule<T> *get_sentries();
     void sort();
     void clear();
+    bool has_value(T);
     Liste &operator=(const Liste &);
     void move_before(Cellule<T> *, Cellule<T> *);
 };
-
+template <class T>
+bool Liste<T>::has_value(T s)
+{
+    Cellule<T> *p = NULL;
+    p = this->head;
+    while (p != this->sentries)
+    {
+        if (p->val() == s)
+        {
+            return true;
+        }
+        p = p->next();
+    }
+    return false;
+};
 template <class T>
 Liste<T> &Liste<T>::operator=(const Liste<T> &is)
 {

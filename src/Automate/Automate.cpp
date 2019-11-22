@@ -170,6 +170,122 @@ void Automate::remove_col_on_line(size_t j, size_t i)
     }
     graphe[i].pop_back();
 };
+void Automate::append_state(state s)
+{
+    this->etats.add(new Cellule<state>(s));
+};
+void Automate::make_finale(state s)
+{
+    this->etatsFinaux.add(new Cellule<state>(s));
+};
+void Automate::make_initiale(state s)
+{
+    this->etatsInitaux.add(new Cellule<state>(s));
+};
+void Automate::remove_state(state s)
+{
+    this->etats.removeByValue(s);
+    this->remove_state_finale(s);
+    this->remove_state_initiale(s);
+};
+void Automate::remove_state_finale(state s)
+{
+    this->etatsFinaux.removeByValue(s);
+};
+void Automate::remove_state_initiale(state s)
+{
+    this->etatsInitaux.removeByValue(s);
+};
+bool Automate::is_finale(state s)
+{
+    return this->etatsFinaux.has_value(s);
+};
+bool Automate::is_initiale(state s)
+{
+    return this->etatsInitaux.has_value(s);
+};
+bool Automate::calculate_word_at(const symbol *word, state start)
+{
+    size_t n = strlen(word), j = 0;
+    Cellule<state> *p;
+    Liste<state> transiter = this->next_state_on(start, word[0]);
+
+    p = transiter.get_head();
+    bool isBelong = false;
+    std::cout << "calcue \n";
+    
+    if (transiter.get_length() == 0)
+    {   std::ostringstream oss;
+        oss << "transition non definie on state " << start << " with label " << word[0];
+        throw my_exception(oss.str().c_str());
+    }
+    std::cout << "calcue zone\n";
+    if (n == 1)
+    {
+
+        while (p != transiter.get_sentries())
+        {
+            if (this->etatsFinaux.has_value(p->val()))
+            {
+                return true;
+            }
+            p = p->next();
+        }
+        return false;
+    }
+    else
+    {
+        while (p != transiter.get_sentries())
+        {
+            isBelong = isBelong || calculate_word_at(word + 1, p->val());
+            p = p->next();
+        }
+    }
+    return isBelong;
+};
+bool Automate::belongs(const symbol *word)
+{
+    size_t n = strlen(word), j = 0;
+    Cellule<state> *p, *p2;
+    Liste<state> transiter;
+    bool isBelong = false;
+    p = this->etatsInitaux.get_head();
+    if (n == 0)
+    {
+        while (p != this->etatsInitaux.get_sentries())
+        {
+            isBelong = isBelong || this->etatsFinaux.has_value(p->val());
+            p = p->next();
+        }
+    }
+    else
+    {
+
+        while (p != this->etatsInitaux.get_sentries())
+        {
+            isBelong = isBelong || this->calculate_word_at(word, p->val());
+            std::cout << isBelong << word << p->val() << "\n";
+            p = p->next();
+        }
+    }
+    return isBelong;
+};
+Liste<state> Automate::next_state_on(state s, symbol a)
+{
+    size_t j = 0;
+    Liste<state> transiter;
+    while (j <= etats.get_length())
+    {
+        if (graphe[s][j]->has_value(a))
+        {
+
+            transiter.add(new Cellule<state>(j));
+        }
+        j++;
+    };
+    std::cout << transiter.get_length() << graphe[s][0]->get_length() << "\n";
+    return transiter;
+};
 // Modification
 //void initial(state s);
 void copy_state(state from, state to);
