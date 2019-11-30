@@ -8,7 +8,7 @@
 #include <sstream>
 #include <stdio.h>
 #include <stdlib.h>
-
+#include <set>
 #include "../lang/lang.hpp"
 #include "../type.hpp"
 #define ERROR_CODE 0
@@ -43,4 +43,7 @@ long long de_string_pour_long_long(std::string s);
 typeId convertion(char *chaine);
 std::string majuscule(const char *);
 std::string majuscule(std::string);
+
+bool are_equal_set(const std::set<state> &s1, const std::set<state> &s2);
+
 #endif

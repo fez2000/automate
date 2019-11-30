@@ -9,6 +9,6 @@ class Afd : public Automate
 public:
     Afd();
     ~Afd();
-}
+};
 }; // namespace automate
 #endif

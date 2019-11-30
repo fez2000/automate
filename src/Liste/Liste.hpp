@@ -12,26 +12,82 @@ protected:
     unsigned long length;
 
 public:
+    Liste<T>(const Liste<T> &v);
     Liste();
     ~Liste();
     bool is_empty();
     unsigned long get_length();
-    Cellule<T> *add(Cellule<T> *);
-    Cellule<T> *add_sort(Cellule<T> *);
-    Cellule<T> *add_after(Cellule<T> *, Cellule<T> *);
-    Cellule<T> *add_before(Cellule<T> *, Cellule<T> *);
+    Liste<T> &add(Cellule<T> *);
+    Liste<T> &push(Cellule<T> *);
+    Liste<T> &add_sort(Cellule<T> *);
+    Liste<T> &add_after(Cellule<T> *, Cellule<T> *);
+    Liste<T> &add_before(Cellule<T> *, Cellule<T> *);
+    long get_index_of(T);
     int remove(Cellule<T> v);
     int removeByValue(T v);
     Cellule<T> *get_head();
     Cellule<T> *get_sentries();
+    Cellule<T> *get_head() const;
+    Cellule<T> *get_sentries() const;
     void sort();
     void clear();
-    bool has_value(T);
-    Liste &operator=(const Liste &);
+    bool has_value(const T &);
+    Liste<T> &operator=(const Liste<T> &);
+    friend Liste<T> operator+(Liste<T> d, Liste<T> s)
+    {
+        std::cout << "add\n";
+        Cellule<T> *p = s.get_head();
+        while (p != s.get_sentries())
+        {
+            std::cout << "add\n";
+            d.add_sort(new Cellule<T>(p->val()));
+            p = p->next();
+        }
+
+        return d;
+    };
+    friend bool operator==(const Liste<T> &l1, const Liste<T> &l2)
+    {
+        if (l1.length != l2.length)
+            return false;
+        Cellule<T> *p = l2.head;
+        while (p != l2.sentries)
+        {
+            bool b = false;
+            Cellule<T> *p2 = NULL;
+            p2 = l1.head;
+            while (p2 != l1.sentries)
+            {
+                if (p2->val() == p->val())
+                {
+                    b = true;
+                }
+                p2 = p2->next();
+            }
+
+            if (!b)
+            {
+                return false;
+            }
+            p = p->next();
+        }
+
+        return true;
+    };
     void move_before(Cellule<T> *, Cellule<T> *);
 };
 template <class T>
-bool Liste<T>::has_value(T s)
+Cellule<T> *Liste<T>::get_head() const
+{
+    return head;
+};
+template <class T>
+Cellule<T> *Liste<T>::get_sentries() const
+{
+    return sentries;
+};
+template <class T>
+bool Liste<T>::has_value(const T &s)
 {
     Cellule<T> *p = NULL;
     p = this->head;
@@ -46,10 +102,43 @@ bool Liste<T>::has_value(T s)
     return false;
 };
 template <class T>
+long Liste<T>::get_index_of(T v)
+{
+    Cellule<T> *p = NULL;
+    p = this->head;
+    long index = -1, i = 0;
+    while (p != this->sentries)
+    {
+        if (p->val() == v)
+        {
+            index = i;
+            break;
+        }
+        p = p->next();
+        i++;
+    }
+    return index;
+};
+template <class T>
+Liste<T>::Liste(const Liste<T> &is)
+{
+    head = new Cellule<T>;
+    sentries = head;
+    length = is.length;
+    Cellule<T> *p = is.head;
+    while (p != is.sentries)
+    {
+
+        push(new Cellule<T>(p->val()));
+        p = p->next();
+    }
+};
+template <class T>
 Liste<T> &Liste<T>::operator=(const Liste<T> &is)
 {
     if (&is != this)
     {
+        clear();
         length = is.length;
         Cellule<T> *p = is.head;
         while (p != is.sentries)
@@ -59,6 +148,7 @@ Liste<T> &Liste<T>::operator=(const Liste<T> &is)
             p = p->next();
         }
     }
+
     return *this;
 };
 template <class T>
@@ -107,14 +197,17 @@ Liste<T>::~Liste()
     clear();
     delete sentries;
 };
+
 template <class T>
 void Liste<T>::clear()
 {
     while (sentries != head)
     {
-        sentries = sentries->prev();
-        delete sentries->next();
+        head = head->next();
+
+        delete head->prev();
     }
+
     length = 0;
 }
 template <class T>
@@ -163,16 +256,27 @@ bool Liste<T>::is_empty()
     return length == 0;
 };
 template <class T>
-Cellule<T> *Liste<T>::add(Cellule<T> *v)
+Liste<T> &Liste<T>::push(Cellule<T> *v)
+{
+    if (length == 0)
+    {
+        return add(v);
+    }
+    add_before(v, sentries);
+
+    return *this;
+};
+template <class T>
+Liste<T> &Liste<T>::add(Cellule<T> *v)
 {
     v->next(head);
     head->prev(v);
     head = v;
     length++;
-    return v;
+    return *this;
 };
 template <class T>
-Cellule<T> *Liste<T>::add_after(Cellule<T> *v, Cellule<T> *a)
+Liste<T> &Liste<T>::add_after(Cellule<T> *v, Cellule<T> *a)
 {
 
     v->next()->prev(a);
@@ -180,10 +284,10 @@ Cellule<T> *Liste<T>::add_after(Cellule<T> *v, Cellule<T> *a)
     v->next(a);
     a->prev(v);
     length++;
-    return v;
+    return *this;
 };
 template <class T>
-Cellule<T> *Liste<T>::add_before(Cellule<T> *v, Cellule<T> *a)
+Liste<T> &Liste<T>::add_before(Cellule<T> *v, Cellule<T> *a)
 {
     if (v == head)
     {
@@ -196,10 +300,10 @@ Cellule<T> *Liste<T>::add_before(Cellule<T> *v, Cellule<T> *a)
     v->prev(a);
     a->next(v);
     length++;
-    return v;
+    return *this;
 };
 template <class T>
-Cellule<T> *Liste<T>::add_sort(Cellule<T> *a)
+Liste<T> &Liste<T>::add_sort(Cellule<T> *a)
 {
     if (length == 0)
     {
