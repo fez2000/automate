@@ -67,6 +67,58 @@ void Automate::print_alphabet()
     }
     std::cout << std::endl;
 };
+void Automate::remove_epsilon_transition()
+{
+    std::set<state>::iterator il, il2, il3;
+    std::set<state> nexts, nexts2;
+    std::set<symbol>::iterator p;
+    il = etats.begin();
+    while (il != etats.end())
+    {
+        nexts = next_state_on(*il, EPSILONE);
+        if (nexts.size() > 0)
+        {
+            if (is_finale(nexts))
+            {
+                make_finale(*il);
+            }
+            il2 = nexts.begin();
+            while (il2 != nexts.end())
+            {
+                del_trans_on_to(*il, EPSILONE, *il2);
+                il3 = etats.begin();
+                while (il3 != etats.end())
+                {
+                    p = graphe[*il2][*il3]->begin();
+                    while (p != graphe[*il2][*il3]->end())
+                    {
+                        if (*p != EPSILONE)
+                        {
+                            set_trans(*il2, *p, *il3);
+                        }
+                        p++;
+                    }
+
+                    il3++;
+                }
+
+                il2++;
+            }
+        }
+        il++;
+    }
+};
+bool Automate::has_epsilon_transition(state e)
+{
+    size_t j = 0;
+    while (j < graphe[e].size())
+    {
+        if (graphe[e][j]->find(EPSILONE) != graphe[e][j]->end())
+            return true;
+        j++;
+    }
+    return false;
+};
 void Automate::determiniser()
 {
     std::vector<std::set<state> *> toExplore;
@@ -198,9 +250,7 @@ void Automate::determiniser()
         make_initiale(*p2);
         p2++;
     }
-    std::cout << "ajout des transition\n";
 
-    std::cout << "graphe des transitions clean\n";
     while (il2 != dest.end())
     {
 
@@ -215,7 +265,6 @@ void Automate::determiniser()
 
         il2++;
     }
-    std::cout << "end allgo\n";
 };
 
 bool Automate::is_trim_automaton()
@@ -234,7 +283,7 @@ bool Automate::is_trim_automaton()
 };
 bool Automate::accessible(state a)
 {
-    std::set<state> see, nexts;
+    std::set<state> see;
     std::set<state>::iterator p;
     if (etatsInitaux.find(a) != etatsFinaux.end())
     {
@@ -253,7 +302,7 @@ bool Automate::accessible(state a)
 };
 bool Automate::coaccessible(state s)
 {
-    std::set<state> see, nexts;
+    std::set<state> see;
     std::set<state>::iterator p;
     if (etatsFinaux.find(s) != etatsFinaux.end())
     {
@@ -269,6 +318,71 @@ bool Automate::coaccessible(state s)
         p++;
     }
     return false;
+};
+std::set<state> Automate::epsilon_closing(std::set<state> s)
+{
+    std::set<state> all;
+    std::set<state>::iterator il = s.begin();
+    while (il != s.end())
+    {
+        std::set<state> tmp = epsilon_closing(*il);
+        set_insert(all, tmp);
+        il++;
+    }
+    return all;
+};
+std::set<state> Automate::transit(std::set<state> s, symbol a)
+{
+    std::set<state> all;
+    std::set<state>::iterator il = s.begin();
+    while (il != s.end())
+    {
+        std::set<state> tmp = transit(*il, a);
+        set_insert(all, tmp);
+        il++;
+    }
+    return all;
+};
+
+std::set<state> Automate::transit(state e, symbol a)
+{
+    std::set<state> see;
+    return transit(e, a, see);
+};
+std::set<state> Automate::transit(state e, symbol a, std::set<state> &see)
+{
+    std::set<state> nexts = next_state_on(e, a);
+    std::set<state>::iterator il = nexts.begin();
+    while (il != nexts.end())
+    {
+        if (see.find(*il) != see.end())
+        {
+            see.insert(*il);
+            epsilon_closing(*il, see);
+        }
+        il++;
+    }
+    return see;
+};
+std::set<state> Automate::epsilon_closing(state e, std::set<state> &see)
+{
+    std::set<state> nexts = next_state_on(e, EPSILONE);
+    std::set<state>::iterator il = nexts.begin();
+    while (il != nexts.end())
+    {
+        if (see.find(*il) != see.end())
+        {
+            see.insert(*il);
+            epsilon_closing(*il, see);
+        }
+        il++;
+    }
+    return see;
+};
+std::set<state> Automate::epsilon_closing(state e)
+{
+    std::set<state> see;
+    return epsilon_closing(e, see);
 };
 bool Automate::useful(state s)
 {
@@ -391,35 +505,47 @@ bool Automate::is_full()
 void Automate::make_full()
 {
 
-    std::set<symbol>::iterator il = sigma.begin();
+    std::set<symbol>::iterator il;
     std::set<state>::iterator p;
     std::set<state> transiter;
     bool hasPuis = false;
     state puis;
-    while (il != sigma.end())
+    p = etats.begin();
+    size_t j = 0;
+    while (p != etats.end() && j < etats.size())
     {
-
-        p = etats.begin();
-        while (p != etats.end())
+        if (*p == puis && hasPuis)
         {
+            std::cout << "continuer\n";
+            p++;
+            continue;
+        }
+        std::cout << "continuer\n";
+        il = sigma.begin();
+        while (il != sigma.end())
+        {
+            std::cout << *il << " continuer2\n";
             transiter = next_state_on(*p, *il);
             if (transiter.size() == 0 && *il != EPSILONE)
             {
                 if (hasPuis)
                 {
-                    this->set_trans(puis, *il, puis);
+
                     this->set_trans(*p, *il, puis);
                 }
                 else
                 {
+                    hasPuis = true;
                     puis = new_state();
-                    this->set_trans(puis, *il, puis);
+                    set_insert(*graphe[puis][puis], sigma);
+
                     this->set_trans(*p, *il, puis);
                 }
             }
-            p++;
+            il++;
         }
-        il++;
+        j++;
+        p++;
     }
 };
 void Automate::del_trans(state s)
@@ -428,23 +554,17 @@ void Automate::del_trans(state s)
     std::set<symbol>::iterator il;
     while (j < graphe[s].size())
     {
-        il = sigma.begin();
-        while (il != sigma.end())
-        {
-            graphe[s][j]->erase(il);
-
-            il++;
-        }
+        graphe[s][j]->clear();
         j++;
     }
 };
 void Automate::del_trans_on(state s, symbol a)
 {
-    size_t j = 0;
-    while (j < graphe[s].size())
+    std::set<state>::iterator il = etats.begin();
+    while (il != etats.end())
     {
-        graphe[s][j]->erase(a);
-        j++;
+        graphe[s][*il]->erase(a);
+        il++;
     }
 };
 void Automate::del_trans_on_to(state s, symbol a, state d)
@@ -453,14 +573,14 @@ void Automate::del_trans_on_to(state s, symbol a, state d)
 };
 void Automate::del_trans_all_to(state destination)
 {
-    size_t j = 0;
-    while (j < etats.size())
+    std::set<state>::iterator il = etats.begin();
+    while (il != etats.end())
     {
-        if (j != destination)
+        if (*il != destination)
         {
-            graphe[j][destination]->clear();
+            graphe[*il][destination]->clear();
         }
-        j++;
+        il++;
     }
 };
 //state duplicate_state(state s);
@@ -702,7 +822,8 @@ Automate::next_state_on(std::set<state> s, symbol a)
     while (p != s.end())
     {
         std::set<state> tmp = next_state_on(*p, a);
-        trasitions.swap(tmp);
+
+        set_insert(trasitions, tmp);
         p++;
     }
     return trasitions;
@@ -727,6 +848,27 @@ std::set<state> Automate::next_state_on(state s, symbol a)
 };
 // Modification
 //void initial(state s);
-void copy_state(state from, state to);
+void Automate::duplicate_state(state from, state to)
+{
+    copy_state(from, to);
+};
+state Automate::duplicate_state(state e)
+{
+    state a = new_state();
+    copy_state(e, a);
+    return a;
+};
+void Automate::copy_state(state from, state to)
+{
+    del_trans_all_to(to);
+    del_trans(to);
+    std::set<state>::iterator il = etats.begin();
+    while (il != etats.end())
+    {
+        graphe[*il][to] = new std::set<symbol>(*graphe[*il][from]);
+        graphe[to][*il] = new std::set<symbol>(*graphe[from][*il]);
+        il++;
+    };
+};
 void change_trans(state s, symbol a, state new_aim);
 } // namespace  automate

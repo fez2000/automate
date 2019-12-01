@@ -14,11 +14,13 @@ int main()
      a.set_trans(1, b, 2);
      a.set_trans(2, b, 1);
      a.set_trans(2, 'b', 3);
-     a.set_trans(3, 'b', 2);
+
      a.set_trans(3, 'a', 1);
      a.make_initiale(3);
      a.make_initiale(1);
      a.make_finale(2);
+     a.print();
+     a.make_full();
      a.print();
      a.print_states_finale();
      a.print_states_initial();

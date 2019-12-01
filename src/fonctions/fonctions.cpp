@@ -172,6 +172,24 @@ bool is_affirmatif(const char *choix)
     }
     return false;
 };
+void set_insert(std::set<symbol> &d, const std::set<symbol> &s)
+{
+    std::set<symbol>::iterator il = s.begin();
+    while (il != s.end())
+    {
+        d.insert(*il);
+        il++;
+    }
+};
+void set_insert(std::set<state> &d, const std::set<state> &s)
+{
+    std::set<state>::iterator il = s.begin();
+    while (il != s.end())
+    {
+        d.insert(*il);
+        il++;
+    }
+};
 std::ostream &serialiser(std::ostream &os, const std::string &s)
 {
     return os << '\"' << s << '\"';

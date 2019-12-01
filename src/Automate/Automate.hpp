@@ -34,10 +34,16 @@ protected:
     void remove_col_on_line(size_t j, size_t i);
     state _new_state();
     void print_set_of_state(const std::set<state> &);
+    std::set<state> epsilon_closing(state e, std::set<state> &see);
+    std::set<state> transit(state e, symbol a, std::set<state> &see);
 
 public:
     // Ajouts/suppression
+    void remove_epsilon_transition();
+    bool has_epsilon_transition(state e);
     state new_state();
+    void duplicate_state(state e, state to);
+    state duplicate_state(state e);
     void print_states_finale();
     void print_states_initial();
     void new_state(state);
@@ -48,14 +54,17 @@ public:
     void del_trans_all_to(state destination);
     bool is_full();
     void make_full();
-    state duplicate_state(state s);
     void del_state(state s);
     void print();
     // Modification
     //void initial(state s);
     //virtual bool calcul(const symbol *mot);
-    void
-    copy_state(state from, state to);
+    std::set<state> epsilon_closing(state e);
+    std::set<state> epsilon_closing(std::set<state> s);
+    std::set<state> transit(state e, symbol a);
+    std::set<state> transit(std::set<state> e, symbol a);
+
+    void copy_state(state from, state to);
     void change_trans(state s, symbol a, state new_aim);
     void init_sigma(const symbol *);
     void append_state(state s);

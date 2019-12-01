@@ -43,7 +43,8 @@ long long de_string_pour_long_long(std::string s);
 typeId convertion(char *chaine);
 std::string majuscule(const char *);
 std::string majuscule(std::string);
-
+void set_insert(std::set<symbol> &d, const std::set<symbol> &s);
+void set_insert(std::set<state> &d, const std::set<state> &s);
 bool are_equal_set(const std::set<state> &s1, const std::set<state> &s2);
 
 #endif
