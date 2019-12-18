@@ -38,6 +38,7 @@ protected:
     std::set<state> transit(state e, symbol a, std::set<state> &see);
 
 public:
+    std::set<symbol> get_sigma();
     // Ajouts/suppression
     void remove_epsilon_transition();
     bool has_epsilon_transition(state e);
@@ -53,17 +54,27 @@ public:
     void del_trans_on_to(state source, symbol a, state destination);
     void del_trans_all_to(state destination);
     bool is_full();
+    bool is_deterministe();
     void make_full();
     void del_state(state s);
     void print();
     // Modification
     //void initial(state s);
     //virtual bool calcul(const symbol *mot);
+    //pour les clotures les alphabets doivent avoir le ensemble des symbol sigma et etre deterministe
+    friend Automate *unionof_closing(Automate a1, Automate a2);
+    friend Automate *intersection_closing(Automate a1, Automate a2);
+    friend Automate miroir_closing(Automate a1, Automate a2);
+    friend Automate *concatenation_closing(Automate a1, Automate a2);
+    friend Automate *etoile_closing(Automate a1, Automate a2);
+    friend Automate *opt_plus(Automate a1, Automate a2);
+    friend Automate *opt_concat(Automate a1, Automate a2);
+    friend Automate *opt_etoille(Automate a1, Automate a2);
     std::set<state> epsilon_closing(state e);
     std::set<state> epsilon_closing(std::set<state> s);
     std::set<state> transit(state e, symbol a);
     std::set<state> transit(std::set<state> e, symbol a);
-
+    bool has_epsilon_transition();
     void copy_state(state from, state to);
     void change_trans(state s, symbol a, state new_aim);
     void init_sigma(const symbol *);
@@ -74,17 +85,22 @@ public:
     void remove_state(state s);
     void remove_state_finale(state s);
     void remove_state_initiale(state s);
+    void complementary();
+    void miroir();
     bool is_finale(state s);
     bool is_finale(const std::set<state> &s);
     bool is_initiale(state s);
+    bool is_initiale(const std::set<state> &s);
     bool belongs(const symbol *word);
     bool check_symbols(const symbol *word);
     bool check_symbol(symbol word);
-    bool accessible(state e);
-    bool coaccessible(state s);
-    bool useful(state s);
-    bool is_trim_automaton();
+    bool accessible(state e);   // dit si un etat est accessible
+    bool coaccessible(state s); // dit si un etat est coaccessible
+    bool useful(state s);       // dit si un etat est complet
+    bool is_trim_automaton();   // dit si un automate est emonde
     void determiniser();
+    void standardisation();
+    void remove_epsilon_transition(state e);
     bool reachEnd(state current, std::set<state> &see);
     bool reach(state current, state dest, std::set<state> &see);
     bool calculate_word_at(const symbol *word, state start);
@@ -96,8 +112,15 @@ public:
     next_state_on(state s);
     Automate(/* args */);
     Automate(const char *alphabet);
+    Automate(std::set<symbol>);
     ~Automate();
 };
-
+Automate *unionof_closing(Automate a1, Automate a2);
+Automate *intersection_closing(Automate a1, Automate a2);
+Automate *opt_plus(Automate a1, Automate a2);
+Automate *opt_concat(Automate a1, Automate a2); 
+Automate *opt_etoille(Automate a1, Automate a2);
+//Automate *concatenation_closing(Automate a1, Automate a2);
+//Automate *etoile_closing(Automate a1, Automate a2);
 }; // namespace automate
 #endif
