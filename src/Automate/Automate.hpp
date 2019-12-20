@@ -45,6 +45,7 @@ public:
     state new_state();
     void duplicate_state(state e, state to);
     state duplicate_state(state e);
+    void print_states();
     void print_states_finale();
     void print_states_initial();
     void new_state(state);
@@ -58,6 +59,13 @@ public:
     void make_full();
     void del_state(state s);
     void print();
+    std::string print_str();
+    void print_alphabet();
+    std::string print_alphabet_str();
+    std::string print_set_of_state_str(const std::set<state> &s);
+    std::string print_states_initial_str();
+    std::string print_states_finale_str();
+    std::string print_states_str();
     // Modification
     //void initial(state s);
     //virtual bool calcul(const symbol *mot);
@@ -81,12 +89,13 @@ public:
     void append_state(state s);
     void make_finale(state s);
     void make_initiale(state s);
-    void print_alphabet();
+
     void remove_state(state s);
     void remove_state_finale(state s);
     void remove_state_initiale(state s);
     void complementary();
     void miroir();
+    bool is_state(state s);
     bool is_finale(state s);
     bool is_finale(const std::set<state> &s);
     bool is_initiale(state s);
@@ -98,6 +107,7 @@ public:
     bool coaccessible(state s); // dit si un etat est coaccessible
     bool useful(state s);       // dit si un etat est complet
     bool is_trim_automaton();   // dit si un automate est emonde
+
     void determiniser();
     void standardisation();
     void remove_epsilon_transition(state e);
@@ -118,7 +128,7 @@ public:
 Automate *unionof_closing(Automate a1, Automate a2);
 Automate *intersection_closing(Automate a1, Automate a2);
 Automate *opt_plus(Automate a1, Automate a2);
-Automate *opt_concat(Automate a1, Automate a2); 
+Automate *opt_concat(Automate a1, Automate a2);
 Automate *opt_etoille(Automate a1, Automate a2);
 //Automate *concatenation_closing(Automate a1, Automate a2);
 //Automate *etoile_closing(Automate a1, Automate a2);

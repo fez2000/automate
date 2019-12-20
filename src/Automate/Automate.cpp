@@ -15,7 +15,18 @@ Automate::Automate(std::set<symbol> b)
 {
     set_insert(sigma, b);
 };
-
+std::string Automate::print_states_finale_str()
+{
+    return print_set_of_state_str(etatsFinaux);
+};
+std::string Automate::print_states_str()
+{
+    return print_set_of_state_str(etats);
+};
+std::string Automate::print_states_initial_str()
+{
+    return print_set_of_state_str(etatsInitaux);
+};
 void Automate::print_states_finale()
 {
     print_set_of_state(etatsFinaux);
@@ -24,17 +35,23 @@ void Automate::print_states_initial()
 {
     print_set_of_state(etatsInitaux);
 };
-void Automate::print_set_of_state(const std::set<state> &s)
+std::string Automate::print_set_of_state_str(const std::set<state> &s)
 {
+    std::stringstream out;
     std::set<state>::iterator il = s.begin();
-    std::cout << "[";
+    out << "[";
     while (il != s.end())
     {
-        std::cout << *il;
+        out << *il;
         if (++il != s.end())
-            std::cout << ",";
+            out << ",";
     }
-    std::cout << "]\n";
+    out << "]\n";
+    return out.str();
+};
+void Automate::print_set_of_state(const std::set<state> &s)
+{
+    std::cout << print_set_of_state_str(s);
 };
 
 bool Automate::reach(state current, state a, std::set<state> &see)
@@ -62,16 +79,23 @@ bool Automate::reach(state current, state a, std::set<state> &see)
     }
     return false;
 };
-void Automate::print_alphabet()
+std::string Automate::print_alphabet_str()
 {
     std::set<symbol>::iterator il = sigma.begin();
+    std::stringstream out;
     while (il != sigma.end())
     {
         if (*il != EPSILONE)
-            std::cout << *il;
+            out << *il;
         il++;
     }
-    std::cout << std::endl;
+    out << std::endl;
+    return out.str();
+};
+void Automate::print_alphabet()
+{
+
+    std::cout << print_alphabet_str();
 };
 void Automate::remove_epsilon_transition(state e)
 {
@@ -214,7 +238,8 @@ bool Automate::has_epsilon_transition()
     return false;
 };
 
-Automate *intersection_closing(Automate a1, Automate a2){
+Automate *intersection_closing(Automate a1, Automate a2)
+{
     Automate *b = new Automate(a1.sigma);
     std::map<state, std::map<state, int> > t;
     std::set<state>::iterator il = a1.etats.begin();
@@ -228,7 +253,7 @@ Automate *intersection_closing(Automate a1, Automate a2){
             {
                 b->make_finale(t[*il][*p]);
             }
-            
+
             p++;
         }
         il++;
@@ -264,7 +289,7 @@ Automate *opt_concat(Automate a1, Automate a2){
 
 };
 Automate *opt_etoille(Automate a1, Automate a2){
-    
+
 };
 Automate *unionof_closing(Automate a1, Automate a2)
 {
@@ -667,7 +692,14 @@ void Automate::new_state(state i)
     {
         _new_state();
     }
-    new_state();
+    if (graphe.size() == i)
+    {
+        new_state();
+    }
+    else
+    {
+        etats.insert(i);
+    }
 };
 void Automate::set_trans(state from, symbol a, state to)
 {
@@ -713,15 +745,15 @@ void Automate::make_full()
     {
         if (*p == puis && hasPuis)
         {
-            std::cout << "continuer\n";
+
             p++;
             continue;
         }
-        std::cout << "continuer\n";
+
         il = sigma.begin();
         while (il != sigma.end())
         {
-            std::cout << *il << " continuer2\n";
+
             transiter = next_state_on(*p, *il);
             if (transiter.size() == 0 && *il != EPSILONE)
             {
@@ -855,6 +887,10 @@ bool Automate::is_finale(state s)
 {
     return this->etatsFinaux.find(s) != this->etatsFinaux.end();
 };
+bool Automate::is_state(state s)
+{
+    return this->etats.find(s) != this->etats.end();
+};
 bool Automate::is_initiale(const std::set<state> &s)
 {
     std::set<state>::iterator p = s.begin();
@@ -887,11 +923,11 @@ bool Automate::is_finale(const std::set<state> &s)
 
     return false;
 };
-void Automate::print()
+std::string Automate::print_str()
 {
     std::set<state>::iterator p, p2;
     std::set<symbol>::iterator p3;
-
+    std::stringstream out;
     p = etats.begin();
 
     while (p != etats.end())
@@ -903,13 +939,18 @@ void Automate::print()
             p3 = graphe[*p][*p2]->begin();
             while (p3 != graphe[*p][*p2]->end())
             {
-                std::cout << "( " << *p << ", " << *p3 << ", " << *p2 << ")\n";
+                out << "( " << *p << ", " << *p3 << ", " << *p2 << ")\n";
                 p3++;
             }
             p2++;
         }
         p++;
     }
+    return out.str();
+};
+void Automate::print()
+{
+    std::cout << print_str();
 };
 bool Automate::is_initiale(state s)
 {
@@ -1126,8 +1167,6 @@ std::set<symbol> Automate::get_sigma()
 {
     return sigma;
 };
-
-
 
 Automate *concatenation_closing(Automate a1, Automate a2){
 

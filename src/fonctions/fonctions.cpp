@@ -232,7 +232,7 @@ std::string cat_many(int nbCh, ...)
 
     return reslut;
 }
-long convertion1(char *chaine)
+long convertion1(const char *chaine)
 {
     unsigned i = 0;
     long nombre = 0;
