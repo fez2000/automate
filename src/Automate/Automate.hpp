@@ -120,17 +120,23 @@ public:
     next_state_on(std::set<state> s, symbol a);
     std::set<state>
     next_state_on(state s);
+    void etoile_closing();
     Automate(/* args */);
     Automate(const char *alphabet);
     Automate(std::set<symbol>);
     ~Automate();
+    std::set<state> states();
+    std::set<state> states_initial();
+    std::set<state> states_finale();
+    friend bool has_equal_sigma(Automate &a1, Automate &a2);
 };
+bool has_equal_sigma(Automate &a1, Automate &a2);
 Automate *unionof_closing(Automate a1, Automate a2);
 Automate *intersection_closing(Automate a1, Automate a2);
 Automate *opt_plus(Automate a1, Automate a2);
 Automate *opt_concat(Automate a1, Automate a2);
 Automate *opt_etoille(Automate a1, Automate a2);
 //Automate *concatenation_closing(Automate a1, Automate a2);
-//Automate *etoile_closing(Automate a1, Automate a2);
+Automate *etoile_closing(Automate a1);
 }; // namespace automate
 #endif

@@ -2,7 +2,18 @@
 
 namespace automate
 {
-
+std::set<state> Automate::states()
+{
+    return etats;
+};
+std::set<state> Automate::states_initial()
+{
+    return etatsInitaux;
+};
+std::set<state> Automate::states_finale()
+{
+    return etatsFinaux;
+};
 Automate::Automate()
 {
     init_sigma(DEFAULT_ALPHABET);
@@ -172,6 +183,13 @@ void Automate::miroir()
 
         il++;
     }
+
+    std::set<state> c;
+    set_insert(c, etatsFinaux);
+    etatsFinaux.clear();
+    set_insert(etatsFinaux, etatsInitaux);
+    etatsInitaux.clear();
+    set_insert(etatsInitaux, c);
 };
 void Automate::standardisation()
 {
@@ -237,7 +255,10 @@ bool Automate::has_epsilon_transition()
     }
     return false;
 };
-
+bool has_equal_sigma(Automate &a1, Automate &a2)
+{
+    return are_equal_set(a1.sigma, a2.sigma);
+};
 Automate *intersection_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
@@ -266,7 +287,7 @@ Automate *intersection_closing(Automate a1, Automate a2)
 
         while (p != a2.etats.end())
         {
-            t[*il][*p] = b->new_state();
+
             std::set<symbol>::iterator sp = b->sigma.begin();
             while (sp != b->sigma.end())
             {
@@ -296,23 +317,20 @@ Automate *unionof_closing(Automate a1, Automate a2)
     Automate *b = new Automate(a1.sigma);
     std::map<state, std::map<state, int> > t;
     std::set<state>::iterator il = a1.etats.begin();
+    std::set<state>::iterator p;
+    set_insert(b->sigma, a2.sigma);
+
     while (il != a1.etats.end())
     {
-        std::set<state>::iterator p = a2.etats.begin();
+        p = a2.etats.begin();
         while (p != a2.etats.end())
         {
             t[*il][*p] = b->new_state();
-            if (a1.is_finale(*il))
+            if (a1.is_finale(*il) || a2.is_finale(*p))
             {
                 b->make_finale(t[*il][*p]);
             }
-            else
-            {
-                if (a2.is_finale(*p))
-                {
-                    b->make_finale(t[*il][*p]);
-                }
-            }
+
             p++;
         }
         il++;
@@ -325,7 +343,7 @@ Automate *unionof_closing(Automate a1, Automate a2)
 
         while (p != a2.etats.end())
         {
-            t[*il][*p] = b->new_state();
+
             std::set<symbol>::iterator sp = b->sigma.begin();
             while (sp != b->sigma.end())
             {
@@ -971,7 +989,7 @@ bool Automate::calculate_word_at(const symbol *word, state start)
 
         oss << "transition non definie on state " << start << " with label " << word[0];
 
-        throw my_exception(oss.str().c_str());
+        throw new my_exception(oss.str().c_str());
         return false;
     }
 
@@ -1171,7 +1189,15 @@ std::set<symbol> Automate::get_sigma()
 Automate *concatenation_closing(Automate a1, Automate a2){
 
 };
-Automate *etoile_closing(Automate a1, Automate a2){
-
+void Automate::etoile_closing()
+{
+    this->set_trans(*etatsFinaux.begin(), '\0', *etatsInitaux.begin());
+    make_finale(*etatsInitaux.begin());
+};
+Automate *etoile_closing(Automate a1)
+{
+    Automate *a2 = new Automate(a1);
+    a2->etoile_closing();
+    return a2;
 };
 } // namespace  automate

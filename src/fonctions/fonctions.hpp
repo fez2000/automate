@@ -46,5 +46,6 @@ std::string majuscule(std::string);
 void set_insert(std::set<symbol> &d, const std::set<symbol> &s);
 void set_insert(std::set<state> &d, const std::set<state> &s);
 bool are_equal_set(const std::set<state> &s1, const std::set<state> &s2);
+bool are_equal_set(std::set<symbol> &s1, std::set<symbol> &s2);
 
 #endif
