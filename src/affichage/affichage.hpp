@@ -21,4 +21,5 @@ void transformer_afd_afn();
 void completer();
 void automate_miroir();
 void sup_unuse();
+void concatenation_of_automates();
 #endif

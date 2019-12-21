@@ -562,6 +562,7 @@ void operations_automates()
         std::cout << "17)   Standardiser un afn\n";
         std::cout << "18)   Cloture par etoille\n";
         std::cout << "19)   dupliquer\n";
+        std::cout << "20)   cloture par concatenation\n";
         getline(std::cin, choixUtilisateur);
         system("clear");
         choix = convertion1(choixUtilisateur.c_str());
@@ -719,6 +720,9 @@ void operations_automates()
         }
         operations_automates();
         break;
+    case 20:
+        concatenation_of_automates();
+        operations_automates();
     default:
         break;
     }
@@ -977,6 +981,82 @@ void union_of_automates()
         getline(std::cin, result);
     } while (result.size() == 0);
     all[result] = automate::unionof_closing(*all[nom1], *all[nom2]);
+}
+
+void concatenation_of_automates()
+{
+    if (all.size() < 2)
+    {
+        std::cout << "Automate insuffisant pour faire la concatenation\n";
+        getline(std::cin, choixUtilisateur);
+        return;
+    }
+    int nombre_deterministe = 0, i = 0;
+    std::map<std::string, automate::Automate *>::iterator il = all.begin();
+    std::cout << "List Automate deterministe: \n";
+
+    while (il != all.end())
+    {
+
+        if (il->second->is_deterministe())
+        {
+            std::cout << ++i << ")  " << il->first << "\n";
+            nombre_deterministe++;
+        }
+        else
+        {
+            i++;
+        }
+        il++;
+    }
+
+    if (nombre_deterministe < 2)
+    {
+        std::cout << "Automate insuffisant pour faire la concatenation\n";
+    }
+    std::string nom1, nom2, result;
+    do
+    {
+        std::cout << "Le nom du premier automate ou stop pour arreter: ";
+        getline(std::cin, nom1);
+        if (nom1.compare("stop") == 0)
+            return;
+        if (!all[nom1]->is_deterministe())
+        {
+            std::cout << "l'automate dois etre deterministe\n";
+        }
+        if (!all[nom1]->is_full())
+        {
+            std::cout << "l'automate dois etre complet\n";
+        }
+    } while (!all[nom1] || !all[nom1]->is_full() || !all[nom1]->is_deterministe());
+    do
+    {
+        std::cout << "Le nom du deuxieme automate ou stop pour arreter: ";
+        getline(std::cin, nom2);
+        if (nom2.compare("stop") == 0)
+            return;
+        if (!all[nom2]->is_deterministe())
+        {
+            std::cout << "l'automate dois etre deterministe\n";
+        }
+        if (!all[nom2]->is_full())
+        {
+            std::cout << "l'automate dois etre complet\n";
+        }
+    } while (!all[nom2] || !all[nom1]->is_full() || !all[nom2]->is_deterministe());
+    if (!automate::has_equal_sigma(*all[nom2], *all[nom1]))
+    {
+        std::cout << "les sigmas sont differents\n";
+        getline(std::cin, choixUtilisateur);
+        return;
+    }
+    std::cout << "Le nom du resultat \n";
+    do
+    {
+        getline(std::cin, result);
+    } while (result.size() == 0);
+    all[result] = automate::concatenation_closing(*all[nom1], *all[nom2]);
 }
 void intersection_of_automates()
 {

@@ -312,6 +312,59 @@ Automate *opt_concat(Automate a1, Automate a2){
 Automate *opt_etoille(Automate a1, Automate a2){
 
 };
+Automate *concatenation_closing(Automate a1, Automate a2)
+{
+    Automate *b = new Automate(a1.sigma);
+    std::map<state, state> t1, t2;
+    std::set<state>::iterator il1 = a1.etats.begin();
+    std::set<state>::iterator il2 = a2.etats.begin();
+    set_insert(b->sigma, a2.sigma);
+    while (il1 != a1.etats.end())
+    {
+        t1[*il1] = b->new_state();
+        if (a1.is_initiale(*il1))
+            b->make_initiale(t1[*il1]);
+        il1++;
+    }
+    while (il2 != a2.etats.end())
+    {
+        t2[*il2] = b->new_state();
+        if (a1.is_finale(*il1))
+            b->make_finale(t1[*il1]);
+        if (a2.is_initiale(*il2))
+        {
+            il1 = a1.etatsFinaux.begin();
+            while (il1 != a1.etatsFinaux.end())
+            {
+                b->set_trans(t1[*il1], '\0', t2[*il2]);
+                il1++;
+            }
+        }
+        il2++;
+    }
+    il1 = a1.etats.begin(), il2 = a1.etats.begin();
+    while (il1 != a1.etats.end())
+    {
+        while (il2 != a1.etats.end())
+        {
+            set_insert(*b->graphe[t1[*il1]][t1[*il2]], *a1.graphe[*il1][*il2]);
+            il2++;
+        }
+        il1++;
+    }
+    il1 = a2.etats.begin(), il2 = a2.etats.begin();
+    while (il1 != a2.etats.end())
+    {
+        while (il2 != a2.etats.end())
+        {
+            set_insert(*b->graphe[t2[*il1]][t2[*il2]], *a2.graphe[*il1][*il2]);
+            il2++;
+        }
+        il1++;
+    }
+    b->remove_epsilon_transition();
+    return b;
+};
 Automate *unionof_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
@@ -1186,9 +1239,6 @@ std::set<symbol> Automate::get_sigma()
     return sigma;
 };
 
-Automate *concatenation_closing(Automate a1, Automate a2){
-
-};
 void Automate::etoile_closing()
 {
     this->set_trans(*etatsFinaux.begin(), '\0', *etatsInitaux.begin());

@@ -136,7 +136,7 @@ Automate *intersection_closing(Automate a1, Automate a2);
 Automate *opt_plus(Automate a1, Automate a2);
 Automate *opt_concat(Automate a1, Automate a2);
 Automate *opt_etoille(Automate a1, Automate a2);
-//Automate *concatenation_closing(Automate a1, Automate a2);
+Automate *concatenation_closing(Automate a1, Automate a2);
 Automate *etoile_closing(Automate a1);
 }; // namespace automate
 #endif
