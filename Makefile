@@ -1,9 +1,9 @@
 CFLAGS= -Wall -Wextra -g -c 
 CCPP= g++
-SRC = ./src
-LIB = ./lib
-OBJ = ./obj
-BIN = ./bin
+SRC = src
+LIB = lib
+OBJ = obj
+BIN = bin
 OBJECTS=$(OBJ)/erreur.o $(OBJ)/affichage.o $(OBJ)/automate.o $(OBJ)/date.o $(OBJ)/lang.o $(OBJ)/fonctions.o $(OBJ)/transition.o
 MAINOBJECTS= $(OBJ)/main.o
 TESTOBJECTS= $(OBJ)/unittest.o $(OBJ)/testvalue.o $(OBJ)/rapport.o  
@@ -51,6 +51,11 @@ clean:
 	rm -rf $(OBJ)/*.o
 	rm -rf $(BIN)/test
 	rm -rf $(BIN)/app
+
+empty: 
+	del /F /Q $(OBJ)\*
+	del /F /Q $(BIN)\test.exe
+	del /F /Q $(BIN)\app.exe
 run: app
 	./$(BIN)/app
 test: ${OBJECTS} $(TESTMAINOBJECTS) $(TESTHEADER) ${TESTOBJECTS}   
