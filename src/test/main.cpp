@@ -3,11 +3,12 @@
 #include <ctype.h>
 #include <string.h>
 #include "test.hpp"
- 
+
 using namespace std;
-int main(){
-      
+int main()
+{
+
       startTest();
-      
-     return 0;
+
+      return 0;
 }

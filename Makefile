@@ -8,19 +8,19 @@ OBJECTS=$(OBJ)/erreur.o $(OBJ)/affichage.o $(OBJ)/automate.o $(OBJ)/date.o $(OBJ
 MAINOBJECTS= $(OBJ)/main.o
 TESTOBJECTS= $(OBJ)/unittest.o $(OBJ)/testvalue.o $(OBJ)/rapport.o  
 TESTMAINOBJECTS= $(OBJ)/maintest.o $(OBJ)/transition.test.o $(OBJ)/test.o $(OBJ)/test2.o
-TESTHEADER=$(SRC)/Erreur/Erreur.hpp  $(SRC)/Test/lib/UnitTest.hpp $(SRC)/Test/lib/TestValue.hpp $(SRC)/Test/lib/Rapport.hpp
+TESTHEADER=$(SRC)/Erreur/Erreur.hpp  $(SRC)/TestClass/lib/UnitTest.hpp $(SRC)/TestClass/lib/TestValue.hpp $(SRC)/TestClass/lib/Rapport.hpp
 HEADER= $(SRC)/Date/Date.hpp $(SRC)/affichage/affichage.hpp $(SRC)/lang/lang.hpp $(SRC)/Cellule/Cellule.hpp $(SRC)/fonctions/fonctions.hpp $(SRC)/Transition/Transition.hpp
 do : app
 $(OBJ)/test.o:
-	$(CCPP) $(CFLAGS) $(SRC)/Test/Test.cpp  -o $(OBJ)/test.o
+	$(CCPP) $(CFLAGS) $(SRC)/TestClass/TestClass.cpp  -o $(OBJ)/test.o
 $(OBJ)/test2.o:
 	$(CCPP) $(CFLAGS)  $(SRC)/test/test.cpp  -o $(OBJ)/test2.o
 $(OBJ)/unittest.o: $(TESTHEADER)
-	$(CCPP) $(CFLAGS) $(SRC)/Test/lib/UnitTest.cpp -o $(OBJ)/unittest.o
+	$(CCPP) $(CFLAGS) $(SRC)/TestClass/lib/UnitTest.cpp -o $(OBJ)/unittest.o
 $(OBJ)/testvalue.o: $(TESTHEADER)
-	$(CCPP) $(CFLAGS) $(SRC)/Test/lib/TestValue.cpp -o $(OBJ)/testvalue.o
+	$(CCPP) $(CFLAGS) $(SRC)/TestClass/lib/TestValue.cpp -o $(OBJ)/testvalue.o
 $(OBJ)/rapport.o: $(TESTHEADER)
-	$(CCPP) $(CFLAGS) $(SRC)/Test/lib/Rapport.cpp -o $(OBJ)/rapport.o 
+	$(CCPP) $(CFLAGS) $(SRC)/TestClass/lib/Rapport.cpp -o $(OBJ)/rapport.o 
 $(OBJ)/automate.o: ${HEADER}
 	$(CCPP) $(CFLAGS) $(SRC)/Automate/Automate.cpp -o $(OBJ)/automate.o $(OBJ)
 $(OBJ)/date.o: ${HEADER} 

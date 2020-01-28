@@ -262,7 +262,7 @@ bool has_equal_sigma(Automate &a1, Automate &a2)
 Automate *intersection_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
-    std::map<state, std::map<state, int> > t;
+    std::map<state, std::map<state, int>> t;
     std::set<state>::iterator il = a1.etats.begin();
     while (il != a1.etats.end())
     {
@@ -368,7 +368,7 @@ Automate *concatenation_closing(Automate a1, Automate a2)
 Automate *unionof_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
-    std::map<state, std::map<state, int> > t;
+    std::map<state, std::map<state, int>> t;
     std::set<state>::iterator il = a1.etats.begin();
     std::set<state>::iterator p;
     set_insert(b->sigma, a2.sigma);
@@ -415,12 +415,12 @@ Automate *unionof_closing(Automate a1, Automate a2)
 void Automate::determiniser()
 {
     std::vector<std::set<state> *> toExplore;
-    std::map<symbol, std::vector<state> > dest;
+    std::map<symbol, std::vector<state>> dest;
     std::set<symbol>::iterator il;
-    std::vector<std::set<state> >::iterator p;
+    std::vector<std::set<state>>::iterator p;
     std::set<state>::iterator p2;
 
-    std::map<symbol, std::vector<state> >::iterator il2;
+    std::map<symbol, std::vector<state>>::iterator il2;
     std::set<state> etats1, etatsFinaux1, etatsInitaux1;
 
     toExplore.push_back(&etatsInitaux);
@@ -430,9 +430,9 @@ void Automate::determiniser()
     il = sigma.begin();
     while (il != sigma.end())
     {
-        std::vector<state> b;
-        b.push_back(-1);
-        dest.insert(std::make_pair(*il, b));
+
+        dest.insert(std::make_pair(*il, *new std::vector<state>()));
+        dest[*il].push_back(-1);
         il++;
     }
 
@@ -448,30 +448,18 @@ void Automate::determiniser()
         while (il != sigma.end())
         {
 
-            p2 = (*toExplore[e]).begin();
-            ep = new std::set<state>;
-            while (p2 != (*toExplore[e]).end())
+            p2 = toExplore[e]->begin();
+            ep = new std::set<state>();
+            while (p2 != toExplore[e]->end())
             {
 
                 //std::cout << p2->val() << (*toExplore[e]).get_length() << " hume " << *il << "\n";
                 std::set<state> transiter = next_state_on((*p2), *il);
-
-                if (transiter.size() > 0)
-                {
-
-                    pp = transiter.begin();
-                    while (pp != transiter.end())
-                    {
-
-                        (*ep).insert(*pp);
-
-                        pp++;
-                    }
-                }
+                set_insert(*ep, transiter);
 
                 p2++;
             }
-
+            print_set_of_state(*ep);
             size_t i = 0;
             while (i < toExplore.size())
             {
@@ -483,7 +471,7 @@ void Automate::determiniser()
             if (i < toExplore.size())
             {
 
-                dest[*il][j] = i;
+                dest[*il][e] = i;
             }
             else
             {
@@ -521,6 +509,7 @@ void Automate::determiniser()
     this->etats.clear();
     this->etatsFinaux.clear();
     this->etatsInitaux.clear();
+
     graphe.clear();
 
     p2 = etats1.begin();
