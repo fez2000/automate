@@ -262,7 +262,7 @@ bool has_equal_sigma(Automate &a1, Automate &a2)
 Automate *intersection_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
-    std::map<state, std::map<state, int>> t;
+    std::map<state, std::map<state, int> > t;
     std::set<state>::iterator il = a1.etats.begin();
     while (il != a1.etats.end())
     {
@@ -368,7 +368,7 @@ Automate *concatenation_closing(Automate a1, Automate a2)
 Automate *unionof_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
-    std::map<state, std::map<state, int>> t;
+    std::map<state, std::map<state, int> > t;
     std::set<state>::iterator il = a1.etats.begin();
     std::set<state>::iterator p;
     set_insert(b->sigma, a2.sigma);
@@ -415,12 +415,12 @@ Automate *unionof_closing(Automate a1, Automate a2)
 void Automate::determiniser()
 {
     std::vector<std::set<state> *> toExplore;
-    std::map<symbol, std::vector<state>> dest;
+    std::map<symbol, std::vector<state> > dest;
     std::set<symbol>::iterator il;
-    std::vector<std::set<state>>::iterator p;
+    std::vector<std::set<state> >::iterator p;
     std::set<state>::iterator p2;
 
-    std::map<symbol, std::vector<state>>::iterator il2;
+    std::map<symbol, std::vector<state> >::iterator il2;
     std::set<state> etats1, etatsFinaux1, etatsInitaux1;
 
     toExplore.push_back(&etatsInitaux);
