@@ -761,9 +761,7 @@ void Automate::new_state(state i)
 };
 void Automate::set_trans(state from, symbol a, state to)
 {
-    std::cout << graphe[from][to]->size();
     graphe[from][to]->insert(a);
-    std::cout << graphe[from][to]->size();
 };
 bool Automate::is_full()
 {
