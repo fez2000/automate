@@ -10,7 +10,7 @@ TESTOBJECTS= $(OBJ)/unittest.o $(OBJ)/testvalue.o $(OBJ)/rapport.o
 TESTMAINOBJECTS= $(OBJ)/maintest.o $(OBJ)/lexique.o $(OBJ)/transition.test.o $(OBJ)/test.o $(OBJ)/test2.o
 TESTHEADER=$(SRC)/Erreur/Erreur.hpp  $(SRC)/TestClass/lib/UnitTest.hpp $(SRC)/TestClass/lib/TestValue.hpp $(SRC)/TestClass/lib/Rapport.hpp
 HEADER= $(SRC)/Date/Date.hpp $(SRC)/affichage/affichage.hpp $(SRC)/lang/lang.hpp $(SRC)/Cellule/Cellule.hpp $(SRC)/fonctions/fonctions.hpp $(SRC)/Transition/Transition.hpp
-do : app
+do : app $(SRC)/Automate/Automate.cpp $(SRC)/Lexique/Parse.cpp
 $(OBJ)/test.o: $(SRC)/TestClass/TestClass.cpp
 	$(CCPP) $(CFLAGS) $(SRC)/TestClass/TestClass.cpp  -o $(OBJ)/test.o
 $(OBJ)/test2.o: $(SRC)/TestClass/lib/UnitTest.cpp
@@ -60,7 +60,7 @@ empty:
 	del /F /Q $(BIN)\app.exe
 run: app
 	./$(BIN)/app
-test: ${OBJECTS} $(TESTMAINOBJECTS) $(TESTHEADER) ${TESTOBJECTS}   
+test: ${OBJECTS} $(TESTMAINOBJECTS) $(TESTHEADER) ${TESTOBJECTS} $(SRC)/Automate/Automate.cpp $(SRC)/Lexique/Parse.cpp $(SRC)/Transition/transition.test.cpp   
 	g++ -o $(BIN)/test ${OBJECTS} $(TESTMAINOBJECTS) ${TESTOBJECTS}
 runtest: test
 	./$(BIN)/test	
