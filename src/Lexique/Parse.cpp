@@ -7,48 +7,25 @@ namespace lexique
 using namespace std;
 std::vector<std::string> Analyser::split(char *line, const char *delimiter = TOK_DELIM)
 {
-    int bufsize = TOK_BUFSIZE, position = 0;
-    char **tokens = (char **)calloc(bufsize, sizeof(char *));
     std::vector<std::string> values;
-    char *token = strtok(line, delimiter), **tokens_backup;
-
-    std::string s(token);
-    while (token != NULL)
+    std::string s(strtok(line, delimiter));
+    while (!s.empty())
     {
-        tokens[position] = token;
-
         values.push_back(s);
-        position++;
-
-        if (position >= bufsize)
-        {
-            bufsize += TOK_BUFSIZE;
-            tokens_backup = tokens;
-            tokens = (char **)realloc(tokens, bufsize * sizeof(char *));
-            if (!tokens)
-            {
-                free(tokens_backup);
-                exit(EXIT_FAILURE);
-            }
-        }
         s.clear();
         s.append(strtok(NULL, delimiter));
     }
     return values;
 }
-std::vector<std::string> Analyser::split(char *line, const char *delimiter = TOK_DELIM)
+char **Analyser::split_str(char *line, const char *delimiter = TOK_DELIM)
 {
     int bufsize = TOK_BUFSIZE, position = 0;
     char **tokens = (char **)calloc(bufsize, sizeof(char *));
-    std::vector<std::string> values;
     char *token = strtok(line, delimiter), **tokens_backup;
 
-    std::string s(token);
     while (token != NULL)
     {
         tokens[position] = token;
-
-        values.push_back(s);
         position++;
 
         if (position >= bufsize)
@@ -64,11 +41,23 @@ std::vector<std::string> Analyser::split(char *line, const char *delimiter = TOK
         }
 
         token = strtok(NULL, delimiter);
-        s.clear();
-        s.append(token);
     }
     tokens[position] = NULL;
+    return tokens;
 }
+bool Analyser::check(const char *word)
+{
+    std::vector<std::string>::iterator il = order.begin();
+    while (il != order.end())
+    {
+        if (pile[*il].belongs(word))
+        {
+            return true;
+        };
+        il++;
+    }
+    return false;
+};
 Analyser::Analyser(/* args */)
 {
 }
