@@ -262,7 +262,7 @@ bool has_equal_sigma(Automate &a1, Automate &a2)
 Automate *intersection_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
-    std::map<state, std::map<state, int> > t;
+    std::map<state, std::map<state, int>> t;
     std::set<state>::iterator il = a1.etats.begin();
     while (il != a1.etats.end())
     {
@@ -368,7 +368,7 @@ Automate *concatenation_closing(Automate a1, Automate a2)
 Automate *unionof_closing(Automate a1, Automate a2)
 {
     Automate *b = new Automate(a1.sigma);
-    std::map<state, std::map<state, int> > t;
+    std::map<state, std::map<state, int>> t;
     std::set<state>::iterator il = a1.etats.begin();
     std::set<state>::iterator p;
     set_insert(b->sigma, a2.sigma);
@@ -415,107 +415,107 @@ Automate *unionof_closing(Automate a1, Automate a2)
 void Automate::determiniser()
 {
     std::vector<std::set<state> *> toExplore;
-    std::map<symbol, std::vector<state> > dest;
+    std::vector<std::vector<std::set<symbol> *>> graphe;
     std::set<symbol>::iterator il;
-    std::vector<std::set<state> >::iterator p;
     std::set<state>::iterator p2;
+    std::vector<std::set<state> *>::iterator cur;
 
-    std::map<symbol, std::vector<state> >::iterator il2;
     std::set<state> etats1, etatsFinaux1, etatsInitaux1;
 
+    size_t e = 0;
     toExplore.push_back(&etatsInitaux);
 
     etatsInitaux1.insert(0);
     etats1.insert(0);
-    il = sigma.begin();
-    while (il != sigma.end())
-    {
-
-        dest.insert(std::make_pair(*il, *new std::vector<state>()));
-        dest[*il].push_back(-1);
-        il++;
-    }
-
-    size_t j = -1, e = 0;
-    std::set<state>::iterator pp;
+    std::vector<std::set<symbol> *> b;
+    graphe.push_back(b);
+    graphe[0].push_back(new std::set<symbol>);
 
     while (e < toExplore.size())
     {
 
-        j++;
         il = sigma.begin();
-        std::set<state> *ep;
         while (il != sigma.end())
         {
+            std::set<state> transit;
+            std::set<state>::iterator b = toExplore[e]->begin();
 
-            p2 = toExplore[e]->begin();
-            ep = new std::set<state>();
-            while (p2 != toExplore[e]->end())
+            while (b != toExplore[e]->end())
             {
+                std::set<state> transiter = next_state_on(*b, *il);
+                set_insert(transit, transiter);
 
-                //std::cout << p2->val() << (*toExplore[e]).get_length() << " hume " << *il << "\n";
-                std::set<state> transiter = next_state_on((*p2), *il);
-                set_insert(*ep, transiter);
-
-                p2++;
+                b++;
             }
-            print_set_of_state(*ep);
-            size_t i = 0;
-            while (i < toExplore.size())
+
+            size_t ii = 0;
+            bool trouver = false;
+            while (ii < toExplore.size())
             {
-                if (are_equal_set(*toExplore[i], *ep))
+                if (are_equal_set(*toExplore[ii], transit))
+                {
+                    trouver = true;
                     break;
-                i++;
+                }
+                ii++;
             }
-
-            if (i < toExplore.size())
+            if (trouver)
             {
 
-                dest[*il][e] = i;
+                graphe[e][ii]->insert(*il);
             }
             else
             {
 
-                if ((*ep).size() > 0)
+                if (transit.size() > 0)
                 {
-                    toExplore.push_back(ep);
-                    il2 = dest.begin();
-                    while (il2 != dest.end())
-                    {
 
-                        (*il2).second.push_back(-1);
-                        il2++;
+                    toExplore.push_back(new std::set<state>(transit));
+
+                    if (is_finale(transit))
+                    {
+                        etatsFinaux1.insert(e + 1);
                     }
 
-                    etats1.insert(toExplore.size() - 1);
+                    size_t k = graphe.size(), j = 0;
+                    std::vector<std::set<symbol> *> bb;
+                    graphe.push_back(bb);
 
-                    if (is_finale(*ep))
+                    while (j < graphe.size())
                     {
-
-                        etatsFinaux1.insert(toExplore.size() - 1);
+                        k = graphe[j].size();
+                        while (k <= graphe.size())
+                        {
+                            graphe[j].push_back(new std::set<symbol>);
+                            k++;
+                        }
+                        j++;
                     }
-
-                    dest[*il][j] = toExplore.size() - 1;
-                };
+                    graphe[e][ii]->insert(*il);
+                }
             }
-
             il++;
         }
 
         e++;
     }
 
-    il2 = dest.begin();
     this->etats.clear();
     this->etatsFinaux.clear();
     this->etatsInitaux.clear();
+    this->graphe.clear();
 
-    graphe.clear();
-
-    p2 = etats1.begin();
-    while (p2 != etats1.end())
+    size_t j = 0;
+    while (j < toExplore.size())
     {
-        new_state(*p2);
+        new_state(j);
+        j++;
+    }
+
+    p2 = etatsInitaux1.begin();
+    while (p2 != etatsInitaux1.end())
+    {
+        make_initiale(*p2);
         p2++;
     }
 
@@ -526,26 +526,24 @@ void Automate::determiniser()
         p2++;
     }
 
-    p2 = etatsInitaux1.begin();
-    while (p2 != etatsInitaux1.end())
+    size_t i = 0;
+    while (i < graphe.size())
     {
-        make_initiale(*p2);
-        p2++;
-    }
-
-    while (il2 != dest.end())
-    {
-
-        size_t t = 0;
-        while (t < (*il2).second.size())
+        j = 0;
+        while (j < graphe[i].size())
         {
 
-            if ((*il2).second[t] != -1)
-                this->set_trans(t, (*il2).first, (*il2).second[t]);
-            t++;
+            std::set<symbol>::iterator t = graphe[i][j]->begin();
+            while (t != graphe[i][j]->end())
+            {
+                this->set_trans(i, *t, j);
+
+                t++;
+            }
+            j++;
         }
 
-        il2++;
+        i++;
     }
 };
 

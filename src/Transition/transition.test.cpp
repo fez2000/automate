@@ -28,6 +28,11 @@ test::Rapport *testDeterminidation(const test::TestValue *)
     b.print();
     b.determiniser();
     b.print();
+    std::cout << "Les etats sont: " << b.print_states_str() << "\n";
+    std::cout << "Les etats Initiaux: " << b.print_states_initial_str() << "\n";
+    std::cout << "Les etats finaux: " << b.print_states_finale_str() << "\n";
+    std::cout << "l'alphabet: " << b.print_alphabet_str() << "\n";
+    std::cout << "graphe des transition: " << b.print_str() << "\n";
     return new test::Rapport(true, "test reussit");
 }
 test::UnitTest b(testName, testCreation);

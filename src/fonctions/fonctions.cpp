@@ -284,7 +284,8 @@ bool are_equal_set(const std::set<state> &s1, const std::set<state> &s2)
             return false;
         il++;
     }
-    return true;
+
+    return s1.size() == s2.size();
 };
 bool are_equal_set(std::set<symbol> &s1, std::set<symbol> &s2)
 {

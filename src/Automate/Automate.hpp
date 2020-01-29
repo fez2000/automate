@@ -9,6 +9,7 @@
 #include <vector>
 #include <map>
 #include <string>
+#include <stdio.h>
 #define EPSILONE '\0'
 #define MOTVIDE NULL
 #define DEFAULT_ALPHABET "!\"#$%&'()*+,./123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}"
