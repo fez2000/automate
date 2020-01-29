@@ -2,6 +2,7 @@
 #include "../test/test.hpp"
 #include "../Automate/Automate.hpp"
 extern test::Test allTest;
+
 std::string testName = "transition creation";
 test::Rapport *testCreation(const test::TestValue *)
 {
@@ -34,16 +35,18 @@ test::Rapport *testParse(const test::TestValue *)
 {
     automate::Automate automaton;
     automaton.new_state();
-    // automaton.print_states();
-    return new test::Rapport(true, "test reussit");
+    automaton.print();
+    return new test::Rapport(false, "test parse reussit");
 }
 
 test::UnitTest b(testName, testCreation);
 test::UnitTest c(testName, testDeterminidation);
-test::UnitTest d(testName, testParse);
+test::UnitTest d("Parsing done", testParse);
+
 void allTransitionUnit()
 {
-    addUnit(b);
-    addUnit(c);
+    /*  addUnit(b);
+    addUnit(c); 
+*/
     addUnit(d);
 }
