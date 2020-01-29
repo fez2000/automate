@@ -35,10 +35,20 @@ test::Rapport *testDeterminidation(const test::TestValue *)
     std::cout << "graphe des transition: " << b.print_str() << "\n";
     return new test::Rapport(true, "test reussit");
 }
+test::Rapport *testParse(const test::TestValue *)
+{
+    automate::Automate automaton;
+    automaton.new_state();
+    // automaton.print_states();
+    return new test::Rapport(true, "test reussit");
+}
+
 test::UnitTest b(testName, testCreation);
 test::UnitTest c(testName, testDeterminidation);
+test::UnitTest d(testName, testParse);
 void allTransitionUnit()
 {
     addUnit(b);
     addUnit(c);
+    addUnit(d);
 }
